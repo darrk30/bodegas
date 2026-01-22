@@ -1,30 +1,27 @@
 <?php
 
-namespace App\Filament\Resources\Users;
+namespace App\Filament\Pdv\Resources\Users;
 
-use App\Filament\Resources\Users\Pages\CreateUser;
-use App\Filament\Resources\Users\Pages\EditUser;
-use App\Filament\Resources\Users\Pages\ListUsers;
-use App\Filament\Resources\Users\Schemas\UserForm;
-use App\Filament\Resources\Users\Tables\UsersTable;
+use App\Filament\Pdv\Resources\Users\Pages\CreateUser;
+use App\Filament\Pdv\Resources\Users\Pages\EditUser;
+use App\Filament\Pdv\Resources\Users\Pages\ListUsers;
+use App\Filament\Pdv\Resources\Users\Schemas\UserForm;
+use App\Filament\Pdv\Resources\Users\Tables\UsersTable;
 use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use UnitEnum;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Administración'; //grupo en la barra de navegacion
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::UserGroup;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
     protected static ?string $recordTitleAttribute = 'User';
-    protected static ?string $navigationLabel = 'Usuarios'; //en la barra de navegacion
-    protected static ?string $pluralModelLabel = 'Usuarios'; // en la pagina principal del recurso
-    protected static ?int $navigationSort = 1;
+    protected static ?string $tenantOwnershipRelationshipName = 'sucursals';
 
     public static function form(Schema $schema): Schema
     {
@@ -39,6 +36,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
+            //
         ];
     }
 

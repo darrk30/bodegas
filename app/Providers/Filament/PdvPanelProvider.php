@@ -2,8 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\AvatarProviders\BoringAvatarsProvider;
-use Filament\Actions\Action;
+use App\Models\Sucursal;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -19,30 +18,27 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
-use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 
-class AdminPanelProvider extends PanelProvider
+class PdvPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('admin')
-            ->path('admin')
+            ->id('pdv')
+            ->path('pdv')
             ->login()
-            // ->profile()
+            ->default()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Blue,
             ])
-            ->defaultAvatarProvider(BoringAvatarsProvider::class)
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            ->discoverResources(in: app_path('Filament/Pdv/Resources'), for: 'App\Filament\Pdv\Resources')
+            ->discoverPages(in: app_path('Filament/Pdv/Pages'), for: 'App\Filament\Pdv\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Pdv/Widgets'), for: 'App\Filament\Pdv\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -58,29 +54,12 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->userMenuItems([
-                'profile' => Action::make('profile')
-                    ->label(fn() => Auth::user()->name)
-                    ->url(fn(): string => EditProfilePage::getUrl())
-                    ->icon('heroicon-m-user-circle')
-                    //If you are using tenancy need to check with the visible method where ->company() is the relation between the user and tenancy model as you called
-                    ->visible(function (): bool {
-                        return Auth::check();
-                    }),
-            ])
             ->plugins([
                 FilamentEditProfilePlugin::make()
-                    ->setTitle('Mi Perfil')
-                    ->setNavigationLabel('Mi Perfil')
-                    ->setIcon('heroicon-o-user')
-                    ->shouldShowAvatarForm(
-                        value: true,
-                        directory: 'avatars', // image will be stored in 'storage/app/public/avatars
-                        rules: 'mimes:jpeg,png|max:1024' //only accept jpeg and png files with a maximum size of 1MB
-                    )
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->tenant(Sucursal::class, slugAttribute: 'slug');
     }
 }
