@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SucursalUser extends Model
 {
+    protected $table = 'sucursal_user';
     protected $fillable = [
         'user_id',
         'sucursal_id',

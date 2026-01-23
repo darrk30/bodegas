@@ -13,10 +13,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasTenants, HasName, FilamentUser, HasAvatar
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -51,7 +52,7 @@ class User extends Authenticatable implements HasTenants, HasName, FilamentUser,
     ];
 
     
-    public function sucursales()
+    public function sucursals()
     {
         return $this->belongsToMany(Sucursal::class);
     }
@@ -60,12 +61,12 @@ class User extends Authenticatable implements HasTenants, HasName, FilamentUser,
 
     public function getTenants(Panel $panel): Collection
     {
-        return $this->sucursales; 
+        return $this->sucursals; 
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return $this->sucursales()->whereKey($tenant)->exists();
+        return $this->sucursals()->whereKey($tenant)->exists();
     }
 
     public function getFilamentName(): string

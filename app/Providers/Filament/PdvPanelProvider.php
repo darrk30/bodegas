@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\SyncSpatieTenant;
 use App\Models\Sucursal;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -54,6 +55,9 @@ class PdvPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->tenantMiddleware([
+                SyncSpatieTenant::class,
+            ], isPersistent: true)
             ->plugins([
                 FilamentEditProfilePlugin::make()
             ])

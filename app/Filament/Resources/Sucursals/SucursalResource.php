@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Sucursals;
 use App\Filament\Resources\Sucursals\Pages\CreateSucursal;
 use App\Filament\Resources\Sucursals\Pages\EditSucursal;
 use App\Filament\Resources\Sucursals\Pages\ListSucursals;
+use App\Filament\Resources\Sucursals\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\Sucursals\Schemas\SucursalForm;
 use App\Filament\Resources\Sucursals\Tables\SucursalsTable;
 use App\Models\Sucursal;
@@ -35,6 +36,7 @@ class SucursalResource extends Resource
     public static function getRelations(): array
     {
         return [
+            UsersRelationManager::class,
         ];
     }
 
