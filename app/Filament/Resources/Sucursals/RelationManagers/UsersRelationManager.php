@@ -2,25 +2,19 @@
 
 namespace App\Filament\Resources\Sucursals\RelationManagers;
 
-// --- TUS IMPORTACIONES NUEVAS ---
-use Filament\Forms;
-use Filament\Schemas\Schema; // Como pediste
+use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-
-// --- ACCIONES GENÉRICAS (SEGÚN TU INDICACIÓN) ---
 use Filament\Actions\AttachAction;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DetachAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachBulkAction;
-
 use App\Models\Role;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,30 +28,28 @@ class UsersRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->label('Nombre Completo')
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
-                Forms\Components\TextInput::make('password')
+                TextInput::make('password')
                     ->password()
                     ->label('Contraseña')
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->required(fn($livewire) => $livewire instanceof CreateAction)
                     ->visibleOn('create'),
 
-                // SELECTOR DE ROL (Sin dehydrated false para que viaje al using)
-                Forms\Components\Select::make('role_id')
+                Select::make('role_id')
                     ->label('Rol en esta Sucursal')
                     ->options(function (RelationManager $livewire) {
-                        return Role::where('sucursal_id', $livewire->getOwnerRecord()->id)
-                            ->pluck('name', 'id');
+                        return Role::where('sucursal_id', $livewire->getOwnerRecord()->id)->pluck('name', 'id');
                     })
                     ->searchable()
                     ->preload()
@@ -89,19 +81,17 @@ class UsersRelationManager extends RelationManager
                     ->color('info'),
             ])
             ->filters([])
-
-            // --- HEADER ACTIONS (Botones Superiores) ---
             ->headerActions([
                 // --- CREAR ---
                 CreateAction::make()
-                    ->label('Nuevo Empleado')
+                    ->icon('heroicon-o-user-plus') // Ícono de usuario con +
+                    ->iconButton()                   // Convierte el botón en solo ícono
+                    ->tooltip('Nuevo Empleado')
                     ->using(function (array $data, RelationManager $livewire): Model {
                         $roleId = $data['role_id'] ?? null;
                         unset($data['role_id']);
-
                         $sucursal = $livewire->getOwnerRecord();
                         $user = $sucursal->users()->create($data);
-
                         if ($roleId) {
                             setPermissionsTeamId($sucursal->id);
                             $role = Role::find($roleId);
@@ -110,33 +100,25 @@ class UsersRelationManager extends RelationManager
                         return $user;
                     }),
 
-                // --- VINCULAR ---
                 AttachAction::make()
-                    ->label('Vincular Existente')
+                    ->icon('heroicon-o-link')        // Ícono de enlace/cadena
+                    ->iconButton()                   // Convierte el botón en solo ícono
+                    ->tooltip('Vincular Existente')
                     ->preloadRecordSelect()
-
-                    // 1. PERSONALIZACIÓN VISUAL
-                    // Esto mostrará: "USUARIO: Juan Perez (juan@gmail.com)"
-                    ->recordTitle(fn($record) => "USUARIO: {$record->name} ({$record->email})")
-
-                    // 2. BUSQUEDA
-                    // Permite buscar escribiendo el nombre o el correo
-                    ->recordSelectOptionsQuery(fn($query) => $query->where('users.id', '!=', 1)) // Opcional: Ocultar Super Admin
+                    ->recordTitle(fn($record) => "{$record->name} ({$record->email})")
+                    ->recordSelectOptionsQuery(fn($query) => $query->where('users.id', '!=', 1))
 
                     ->schema(fn(AttachAction $action): array => [
                         $action->getRecordSelect()
-                            ->searchable(['name', 'email']), // Activa la búsqueda por ambos campos
+                            ->searchable(['name', 'email']),
 
-                        Forms\Components\Select::make('role_id')
+                        Select::make('role_id')
                             ->label('Rol a asignar')
                             ->options(function (RelationManager $livewire) {
-                                // CORRECCIÓN: 'sucursal_id' (sin espacio) o 'team_id' según tu BD
-                                // Si usas Spatie por defecto, debería ser 'team_id'. Si personalizaste, 'sucursal_id'.
                                 return Role::where('sucursal_id', $livewire->getOwnerRecord()->id)
                                     ->pluck('name', 'id');
                             })
                             ->required()
-                            // ->dehydrated(false)
                     ])
                     ->after(function ($record, array $data, RelationManager $livewire) {
                         if (!empty($data['role_id'])) {
@@ -146,12 +128,11 @@ class UsersRelationManager extends RelationManager
                         }
                     }),
             ])
-
-            // --- RECORD ACTIONS (Acciones de Fila - Antes 'actions') ---
             ->recordActions([
-                // EDITAR
                 EditAction::make()
-                    ->label('Editar')
+                    ->icon('heroicon-o-pencil-square')
+                    ->iconButton()
+                    ->tooltip('Editar')
                     ->mutateRecordDataUsing(function (array $data, $record, RelationManager $livewire): array {
                         setPermissionsTeamId($livewire->getOwnerRecord()->id);
                         $record->unsetRelation('roles');
@@ -161,11 +142,8 @@ class UsersRelationManager extends RelationManager
                     ->using(function ($record, array $data, RelationManager $livewire): Model {
                         $roleId = $data['role_id'] ?? null;
                         unset($data['role_id']);
-
                         if (empty($data['password'])) unset($data['password']);
-
                         $record->update($data);
-
                         if ($roleId) {
                             setPermissionsTeamId($livewire->getOwnerRecord()->id);
                             $role = Role::find($roleId);
@@ -173,13 +151,11 @@ class UsersRelationManager extends RelationManager
                         }
                         return $record;
                     }),
-
-                // QUITAR (Detach)
-                DetachAction::make()
-                    ->label('Quitar'),
+                DetachAction::make()->icon('heroicon-o-trash') // Ícono de basura
+                    ->iconButton()             // Convierte en botón redondo solo ícono
+                    ->tooltip('Desvincular Usuario')
+                    ->color('danger'),
             ])
-
-            // --- TOOLBAR ACTIONS (Acciones Masivas - Antes 'bulkActions') ---
             ->toolbarActions([
                 BulkActionGroup::make([
                     DetachBulkAction::make(),

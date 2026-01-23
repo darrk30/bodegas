@@ -78,6 +78,10 @@ class AdminPanelProvider extends PanelProvider
                         rules: 'mimes:jpeg,png|max:1024' //only accept jpeg and png files with a maximum size of 1MB
                     )
             ])
+            ->registerErrorNotification(
+                title: 'An error occurred',
+                body: 'Please try again later.',
+            )
             ->authMiddleware([
                 Authenticate::class,
             ]);
