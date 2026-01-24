@@ -21,12 +21,12 @@ class AdminUserSeeder extends Seeder
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@gmail.com'],
             [
-                'name'     => 'Super Admin',
+                'name'     => 'Super Admin Kevin',
                 'password' => Hash::make('123123123'),
             ]
         );
 
-        $superAdminRole = Role::where('name', 'Super Admin')->where('sucursal_id', null)->first();
+        $superAdminRole = Role::where('name', 'Super Admin Kevin')->where('sucursal_id', null)->first();
 
         if ($superAdminRole && ! $superAdmin->hasRole($superAdminRole)) {
             $superAdmin->assignRole($superAdminRole);
