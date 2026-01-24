@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
-class AdminRoleSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
     public function run()
     {
