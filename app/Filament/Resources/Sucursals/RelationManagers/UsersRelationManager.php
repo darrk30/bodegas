@@ -16,6 +16,7 @@ use App\Models\Role;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UsersRelationManager extends RelationManager
@@ -98,7 +99,8 @@ class UsersRelationManager extends RelationManager
                             if ($role) $user->assignRole($role);
                         }
                         return $user;
-                    }),
+                    })
+                    ->visible(fn() => Auth::user()->can('nuevo_usuario_sucursal')),
 
                 AttachAction::make()
                     ->icon('heroicon-o-link')        // Ícono de enlace/cadena
@@ -126,7 +128,8 @@ class UsersRelationManager extends RelationManager
                             $role = Role::find($data['role_id']);
                             if ($role) $record->assignRole($role);
                         }
-                    }),
+                    })
+                    ->visible(fn() => Auth::user()->can('vincular_usuario_exitente_sucursal')),
             ])
             ->recordActions([
                 EditAction::make()
@@ -150,11 +153,13 @@ class UsersRelationManager extends RelationManager
                             if ($role) $record->syncRoles($role);
                         }
                         return $record;
-                    }),
+                    })
+                    ->visible(fn() => Auth::user()->can('editar_usuario_sucursal')),
                 DetachAction::make()->icon('heroicon-o-trash') // Ícono de basura
                     ->iconButton()             // Convierte en botón redondo solo ícono
                     ->tooltip('Desvincular Usuario')
-                    ->color('danger'),
+                    ->color('danger')
+                    ->visible(fn() => Auth::user()->can('eliminar_usuario_sucursal')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

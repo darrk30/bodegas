@@ -13,7 +13,7 @@ class SucursalObserver
      */
     public function created(Sucursal $sucursal): void
     {
-        $rolesEstandar = ['Administrador', 'Cajero', 'Vendedor'];
+        $rolesEstandar = ['Administrador'];
         foreach ($rolesEstandar as $nombreRol) {
             $rol = Role::firstOrCreate([
                 'name' => $nombreRol,
