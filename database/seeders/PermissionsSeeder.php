@@ -33,6 +33,10 @@ class PermissionsSeeder extends Seeder
                     'crear_sucursales'    => 'Registrar nuevas sucursales',
                     'editar_sucursales'   => 'Modificar datos de sucursales existentes',
                     'eliminar_sucursales' => 'Eliminar o desactivar sucursales',
+                    'nuevo_usuario_sucursal' => 'Agregar nuevos empleados a una sucursal',
+                    'vincular_usuario_exitente_sucursal' => 'Vincular empleados existentes a una sucursal',
+                    'editar_usuario_sucursal' => 'Editar empleado de una sucursal',
+                    'eliminar_usuario_sucursal' => 'Eliminar empleados de una sucursal',
                 ]
             ],
 
