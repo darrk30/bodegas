@@ -38,12 +38,12 @@ class AdminUserSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],
             [
-                'name'     => 'Admin',
+                'name'     => 'Admin Bryan',
                 'password' => Hash::make('123123'),
             ]
         );
 
-        $adminRole = Role::where('name', 'Admin')
+        $adminRole = Role::where('name', 'Admin Bryan')
             ->where('sucursal_id', null)
             ->first();
 
