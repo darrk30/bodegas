@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('module')->nullable();
             $table->string('module_label')->nullable();
+            $table->string('scope');
             $table->index('module');
             $table->timestamps();
             $table->unique(['name', 'guard_name']);

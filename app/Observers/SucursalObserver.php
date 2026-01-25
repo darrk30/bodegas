@@ -14,14 +14,19 @@ class SucursalObserver
     public function created(Sucursal $sucursal): void
     {
         $rolesEstandar = ['Administrador'];
+
         foreach ($rolesEstandar as $nombreRol) {
             $rol = Role::firstOrCreate([
                 'name' => $nombreRol,
                 'guard_name' => 'web',
                 'sucursal_id' => $sucursal->id
             ]);
+
             if ($nombreRol === 'Administrador') {
-                $permisos = Permission::all();
+                // --- CAMBIO AQUÍ ---
+                // En lugar de all(), filtramos por el alcance 'sucursal'
+                $permisos = Permission::where('scope', 'sucursal')->get();
+
                 if ($permisos->count() > 0) {
                     $rol->syncPermissions($permisos);
                 }

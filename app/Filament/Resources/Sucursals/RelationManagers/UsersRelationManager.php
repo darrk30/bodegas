@@ -85,8 +85,8 @@ class UsersRelationManager extends RelationManager
             ->headerActions([
                 // --- CREAR ---
                 CreateAction::make()
-                    ->icon('heroicon-o-user-plus') // Ícono de usuario con +
-                    ->iconButton()                   // Convierte el botón en solo ícono
+                    ->icon('heroicon-o-user-plus')
+                    ->iconButton()
                     ->tooltip('Nuevo Empleado')
                     ->using(function (array $data, RelationManager $livewire): Model {
                         $roleId = $data['role_id'] ?? null;
@@ -100,11 +100,11 @@ class UsersRelationManager extends RelationManager
                         }
                         return $user;
                     })
-                    ->visible(fn() => Auth::user()->can('nuevo_usuario_sucursal')),
+                    ->visible(fn() => Auth::user()->can('nuevo_usuario_sucursal_admin')),
 
                 AttachAction::make()
-                    ->icon('heroicon-o-link')        // Ícono de enlace/cadena
-                    ->iconButton()                   // Convierte el botón en solo ícono
+                    ->icon('heroicon-o-link')
+                    ->iconButton()
                     ->tooltip('Vincular Existente')
                     ->preloadRecordSelect()
                     ->recordTitle(fn($record) => "{$record->name} ({$record->email})")
@@ -129,7 +129,7 @@ class UsersRelationManager extends RelationManager
                             if ($role) $record->assignRole($role);
                         }
                     })
-                    ->visible(fn() => Auth::user()->can('vincular_usuario_exitente_sucursal')),
+                    ->visible(fn() => Auth::user()->can('vincular_usuario_exitente_sucursal_admin')),
             ])
             ->recordActions([
                 EditAction::make()
@@ -154,12 +154,12 @@ class UsersRelationManager extends RelationManager
                         }
                         return $record;
                     })
-                    ->visible(fn() => Auth::user()->can('editar_usuario_sucursal')),
-                DetachAction::make()->icon('heroicon-o-trash') // Ícono de basura
-                    ->iconButton()             // Convierte en botón redondo solo ícono
+                    ->visible(fn() => Auth::user()->can('editar_usuario_sucursal_admin')),
+                DetachAction::make()->icon('heroicon-o-trash')
+                    ->iconButton()
                     ->tooltip('Desvincular Usuario')
                     ->color('danger')
-                    ->visible(fn() => Auth::user()->can('eliminar_usuario_sucursal')),
+                    ->visible(fn() => Auth::user()->can('eliminar_usuario_sucursal_admin')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

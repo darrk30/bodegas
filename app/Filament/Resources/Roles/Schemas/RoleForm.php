@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\Roles\Schemas;
 
-use App\Models\Permission; // <--- Importante: Tu modelo extendido
+use App\Models\Permission; 
+use Filament\Facades\Filament; // <--- 1. IMPORTAR ESTO
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
@@ -14,6 +15,13 @@ class RoleForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $panelActual = Filament::getCurrentPanel()->getId();
+        $scopeDeseado = match ($panelActual) {
+            'admin' => 'global',
+            'pdv'   => 'sucursal',
+            default => 'sucursal',
+        };
+
         $components = [
             Section::make('Detalles del Rol')
                 ->description('Configuración principal del rol.')
@@ -28,9 +36,9 @@ class RoleForm
                     Hidden::make('sucursal_id')->default(null),
                 ])->columns(2),
         ];
-        $grupos = Permission::all()->groupBy('module');
 
-        // 3. GENERAR SECCIONES DINÁMICAS
+        $grupos = Permission::where('scope', $scopeDeseado)->get()->groupBy('module');
+
         foreach ($grupos as $moduloKey => $permisosDelGrupo) {
             if (empty($moduloKey)) continue;
             $tituloSeccion = $permisosDelGrupo->first()->module_label ?? Str::headline($moduloKey);
@@ -41,19 +49,18 @@ class RoleForm
                 ->schema([
                     CheckboxList::make('permissions_' . $moduloKey)
                         ->label('')
-                        ->options(
-                            $permisosDelGrupo->pluck('description', 'id')
-                        )
-                        ->formatStateUsing(function ($record) use ($moduloKey) {
+                        ->options($permisosDelGrupo->pluck('name', 'id'))
+                        ->formatStateUsing(function ($record) use ($moduloKey, $scopeDeseado) {
                             if (! $record) return [];
                             return $record->permissions()
                                 ->where('module', $moduloKey)
+                                ->where('scope', $scopeDeseado)
                                 ->pluck('id')
                                 ->toArray();
                         })
-                        ->columns(2) 
+                        ->columns(2)
                         ->bulkToggleable()
-                        ->searchable(), 
+                        ->searchable(),
                 ]);
         }
 

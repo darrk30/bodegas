@@ -22,7 +22,7 @@ class CreateRole extends CreateRecord
                 unset($data[$key]);
             }
         }
-        $data['sucursal_id'] = \Filament\Facades\Filament::getTenant()?->id;
+        $data['sucursal_id'] = Filament::getTenant()?->id;
         return $data;
     }
 

@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Permission; // <--- IMPORTANTE: Tu modelo extendido
 use Spatie\Permission\PermissionRegistrar;
 
-class PermissionsSeeder extends Seeder
+class PermissionsAdminSeeder extends Seeder
 {
     public function run()
     {
@@ -21,7 +21,7 @@ class PermissionsSeeder extends Seeder
             'panel_admin' => [
                 'label' => 'Dashboard Principal', // <--- AQUÍ VA EL TÍTULO VISUAL
                 'permissions' => [
-                    'ver_panel_admin' => 'Acceso al panel de administración principal',
+                    'ver_panel_admin' => 'Acceso al dashboard',
                 ]
             ],
 
@@ -29,14 +29,14 @@ class PermissionsSeeder extends Seeder
             'sucursales' => [
                 'label' => 'Administración de Sucursales',
                 'permissions' => [
-                    'ver_sucursales'      => 'Ver listado y detalles de sucursales',
-                    'crear_sucursales'    => 'Registrar nuevas sucursales',
-                    'editar_sucursales'   => 'Modificar datos de sucursales existentes',
-                    'eliminar_sucursales' => 'Eliminar o desactivar sucursales',
-                    'nuevo_usuario_sucursal' => 'Agregar nuevos empleados a una sucursal',
-                    'vincular_usuario_exitente_sucursal' => 'Vincular empleados existentes a una sucursal',
-                    'editar_usuario_sucursal' => 'Editar empleado de una sucursal',
-                    'eliminar_usuario_sucursal' => 'Eliminar empleados de una sucursal',
+                    'ver_sucursales_admin'      => 'Ver listado y detalles de sucursales',
+                    'crear_sucursales_admin'    => 'Registrar sucursales',
+                    'editar_sucursales_admin'   => 'Editar sucursales',
+                    'eliminar_sucursales_admin' => 'Eliminar sucursales',
+                    'nuevo_usuario_sucursal_admin' => 'Agregar nuevos usuarios a una sucursal',
+                    'vincular_usuario_exitente_sucursal_admin' => 'Vincular usuarios existentes a una sucursal',
+                    'editar_usuario_sucursal_admin' => 'Editar usuario de una sucursal',
+                    'eliminar_usuario_sucursal_admin' => 'Eliminar usuario de una sucursal',
                 ]
             ],
 
@@ -45,16 +45,16 @@ class PermissionsSeeder extends Seeder
                 'label' => 'Gestión de Personal y Accesos',
                 'permissions' => [
                     // Gestión básica
-                    'ver_usuarios'      => 'Ver listado de empleados/usuarios',
-                    'crear_usuarios'    => 'Registrar nuevos usuarios en el sistema',
-                    'editar_usuarios'   => 'Editar información de usuarios',
-                    'eliminar_usuarios' => 'Eliminar usuarios del sistema',
-                    
+                    'ver_usuarios_admin'      => 'Ver listado de usuarios',
+                    'crear_usuarios_admin'    => 'Registrar usuarios',
+                    'editar_usuarios_admin'   => 'Editar usuarios',
+                    'eliminar_usuarios_admin' => 'Eliminar usuarios',
+
                     // Seguridad avanzada
-                    'ver_roles_usuario'        => 'Ver los roles asignados a un usuario',
-                    'asignar_roles_usuario'    => 'Cambiar/Asignar roles a usuarios',
-                    'ver_permisos_usuario'     => 'Ver los permisos directos asignados a un usuario',
-                    'asignar_permisos_usuario' => 'Asignar permisos directos (excepciones)',
+                    'ver_roles_usuario_admin'        => 'Ver los roles asignados a un usuario',
+                    'asignar_roles_usuario_admin'    => 'Cambiar/Asignar roles a usuarios',
+                    'ver_permisos_usuario_admin'     => 'Ver los permisos directos asignados a un usuario',
+                    'asignar_permisos_usuario_admin' => 'Asignar permisos directos (excepciones)',
                 ]
             ],
 
@@ -62,10 +62,10 @@ class PermissionsSeeder extends Seeder
             'roles' => [
                 'label' => 'Configuración de Roles y Seguridad',
                 'permissions' => [
-                    'ver_roles'      => 'Visualizar roles configurados',
-                    'crear_roles'    => 'Crear nuevos tipos de roles',
-                    'editar_roles'   => 'Modificar permisos de un rol',
-                    'eliminar_roles' => 'Eliminar roles del sistema',
+                    'ver_roles_admin'      => 'Visualizar roles configurados',
+                    'crear_roles_admin'    => 'Crear nuevos tipos de roles',
+                    'editar_roles_admin'   => 'Modificar permisos de un rol',
+                    'eliminar_roles_admin' => 'Eliminar roles del sistema',
                 ]
             ],
         ];
@@ -83,8 +83,9 @@ class PermissionsSeeder extends Seeder
                     ['name' => $permissionName], // Busca por nombre técnico
                     [
                         'description'  => $permissionDesc,
-                        'module'       => $keyModule,   // Ej: 'usuarios'
-                        'module_label' => $moduleLabel, // Ej: 'Gestión de Personal...' (NUEVO CAMPO)
+                        'module'       => $keyModule,
+                        'module_label' => $moduleLabel,
+                        'scope'        => 'global',
                         'guard_name'   => 'web'
                     ]
                 );
