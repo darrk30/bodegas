@@ -26,7 +26,7 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $superAdminRole = Role::where('name', 'Super Admin Kevin')->where('sucursal_id', null)->first();
+        $superAdminRole = Role::where('name', 'Super Admin')->where('sucursal_id', null)->first();
 
         if ($superAdminRole && ! $superAdmin->hasRole($superAdminRole)) {
             $superAdmin->assignRole($superAdminRole);
@@ -43,7 +43,7 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
-        $adminRole = Role::where('name', 'Admin Bryan')
+        $adminRole = Role::where('name', 'Admin')
             ->where('sucursal_id', null)
             ->first();
 

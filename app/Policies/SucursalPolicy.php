@@ -4,63 +4,115 @@ namespace App\Policies;
 
 use App\Models\Sucursal;
 use App\Models\User;
+use Filament\Facades\Filament; // <--- 1. Importante
 use Illuminate\Auth\Access\Response;
 
 class SucursalPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Helper para detectar si estamos en Admin o PDV
+     */
+    private function getSuffix(): string
+    {
+        return Filament::getCurrentPanel()->getId() === 'admin' ? '_admin' : '_pdv';
+    }
+
+    /**
+     * Ver listado (Index)
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('ver_sucursales');
+        return $user->hasPermissionTo('ver_sucursales' . $this->getSuffix());
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Ver detalle
      */
     public function view(User $user, Sucursal $sucursal): bool
     {
-        return $user->hasPermissionTo('ver_sucursales');
+        // 1. Chequeo de Permiso básico
+        if (! $user->hasPermissionTo('ver_sucursales' . $this->getSuffix())) {
+            return false;
+        }
+
+        // 2. SEGURIDAD PDV:
+        if ($this->getSuffix() === '_pdv') {
+            // CORRECCIÓN: Verificamos en la tabla pivote si el usuario tiene acceso a ESTA sucursal
+            $tieneAcceso = $user->sucursals()
+                ->where('sucursals.id', $sucursal->id)
+                ->exists();
+
+            if (! $tieneAcceso) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Crear
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('crear_sucursales');
+        return $user->hasPermissionTo('crear_sucursales' . $this->getSuffix());
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Editar
      */
     public function update(User $user, Sucursal $sucursal): bool
     {
-        return $user->hasPermissionTo('editar_sucursales');
+        // 1. Permiso
+        if (! $user->hasPermissionTo('editar_sucursales' . $this->getSuffix())) {
+            return false;
+        }
+
+        // 2. SEGURIDAD PDV:
+        if ($this->getSuffix() === '_pdv') {
+            // CORRECCIÓN: Solo editar si pertenece a mis sucursals asignadas
+            $tieneAcceso = $user->sucursals()
+                ->where('sucursals.id', $sucursal->id)
+                ->exists();
+
+            if (! $tieneAcceso) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Eliminar
      */
     public function delete(User $user, Sucursal $sucursal): bool
     {
-        return $user->hasPermissionTo('eliminar_sucursales');
+        if (! $user->hasPermissionTo('eliminar_sucursales' . $this->getSuffix())) {
+            return false;
+        }
+
+        // SEGURIDAD PDV:
+        if ($this->getSuffix() === '_pdv') {
+            $tieneAcceso = $user->sucursals()
+                ->where('sucursals.id', $sucursal->id)
+                ->exists();
+
+            if (! $tieneAcceso) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, Sucursal $sucursal): bool
     {
-        return $user->hasPermissionTo('restaurar_sucursales');
+        return $user->hasPermissionTo('restaurar_sucursales_admin');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Sucursal $sucursal): bool
     {
-        return $user->hasPermissionTo('eliminar_sucursales');
+        return $user->hasPermissionTo('eliminar_sucursales_admin');
     }
 }

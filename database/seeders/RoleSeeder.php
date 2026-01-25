@@ -22,7 +22,8 @@ class RoleSeeder extends Seeder
         ]);
 
         // TODOS los permisos (actuales y futuros)
-        $superAdmin->syncPermissions(Permission::all());
+        $permisosGlobales = Permission::where('scope', 'global')->get();
+        $superAdmin->syncPermissions($permisosGlobales);
 
         /* =====================================================
          |  ROL ADMIN (Administrador general)
@@ -35,27 +36,35 @@ class RoleSeeder extends Seeder
         ]);
 
         // Permisos granulares del Admin
+        // ... en RoleSeeder.php
+
+        // Permisos granulares del Admin
         $admin->syncPermissions([
             // 🔐 Acceso
-            'ver_panel_admin',
+            'ver_panel_admin', // Este estaba bien
 
-            // 🏢 Sucursales
-            'ver_sucursales',
-            'crear_sucursales',
-            'editar_sucursales',
-            // ❌ eliminar_sucursales (opcionalmente bloqueado)
+            // 🏢 Sucursales (AGREGAR _admin)
+            'ver_sucursales_admin',
+            'crear_sucursales_admin',
+            'editar_sucursales_admin',
+            // 'eliminar_sucursales_admin', 
 
-            // 👥 Usuarios
-            'ver_usuarios',
-            'crear_usuarios',
-            'editar_usuarios',
-            'eliminar_usuarios',
+            // 👥 Usuarios (AGREGAR _admin)
+            'ver_usuarios_admin',
+            'crear_usuarios_admin',
+            'editar_usuarios_admin',
+            'eliminar_usuarios_admin',
 
-            // 🛡 Roles
-            'ver_roles',
-            'crear_roles',
-            'editar_roles',
-            // ❌ eliminar_roles
+            // 🛡 Roles (AGREGAR _admin)
+            'ver_roles_admin',
+            'crear_roles_admin',
+            'editar_roles_admin',
+            // 'eliminar_roles_admin',
+
+            // Y no olvides los de seguridad de usuarios si los necesita el Admin
+            'ver_roles_usuario_admin',
+            'asignar_roles_usuario_admin',
+            // etc...
         ]);
     }
 }

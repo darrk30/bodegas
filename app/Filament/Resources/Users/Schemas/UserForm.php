@@ -51,8 +51,8 @@ class UserForm
                     ->noSearchResultsMessage('No existe ningún rol con ese nombre.')
 
                     // Permisos y Visibilidad
-                    ->visible(fn() => Auth::user()->can('ver_roles_usuario'))
-                    ->disabled(fn() => !Auth::user()->can('asignar_roles_usuario')),
+                    ->visible(fn() => Auth::user()->can('ver_roles_usuario_admin'))
+                    ->disabled(fn() => !Auth::user()->can('asignar_roles_usuario_admin')),
 
 
                 // --- SECCIÓN PERMISOS (Con tu descripción bonita) ---
@@ -72,8 +72,8 @@ class UserForm
                     ->noSearchResultsMessage('Permiso no encontrado.')
 
                     ->helperText('Solo usar en casos excepcionales.')
-                    ->visible(fn() => Auth::user()->can('ver_permisos_usuario'))
-                    ->disabled(fn() => !Auth::user()->can('asignar_permisos_usuario')),
+                    ->visible(fn() => Auth::user()->can('ver_permisos_usuario_admin'))
+                    ->disabled(fn() => !Auth::user()->can('asignar_permisos_usuario_admin')),
 
                 // --- LÓGICA DE CONTRASEÑA ---
                 Toggle::make('change_password')

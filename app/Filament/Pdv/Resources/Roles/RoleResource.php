@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class RoleResource extends Resource
 {
@@ -50,7 +51,7 @@ class RoleResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('sucursal_id', Filament::getTenant()->id);
+        return parent::getEloquentQuery()->where('sucursal_id', Auth::user()->sucursals()->first()?->id);
     }
 
     public static function getPages(): array
