@@ -23,9 +23,13 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShieldCheck;
 
     protected static ?string $recordTitleAttribute = 'Role';
+
+    protected static ?string $navigationLabel = 'Roles y Permisos'; //en la barra de navegacion
+
+    protected static ?string $pluralModelLabel = 'Roles y Permisos'; // en la pagina principal del recurso
 
     public static function form(Schema $schema): Schema
     {

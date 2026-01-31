@@ -60,6 +60,14 @@ class PdvPanelProvider extends PanelProvider
             ], isPersistent: true)
             ->plugins([
                 FilamentEditProfilePlugin::make()
+                    ->setTitle('Mi Perfil')
+                    ->setNavigationLabel('Mi Perfil')
+                    ->setIcon('heroicon-o-user')
+                    ->shouldShowAvatarForm(
+                        value: true,
+                        directory: 'avatars',
+                        rules: 'mimes:jpeg,png|max:1024'
+                    )
             ])
             ->authMiddleware([
                 Authenticate::class,
