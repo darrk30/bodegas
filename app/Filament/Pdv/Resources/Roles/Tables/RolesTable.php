@@ -35,9 +35,9 @@ class RolesTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                ViewAction::make()->icon('heroicon-o-eye')->iconButton()->tooltip('Ver'),
+                EditAction::make()->icon('heroicon-o-pencil-square')->iconButton()->tooltip('Editar'),
+                DeleteAction::make()->icon('heroicon-o-trash')->iconButton()->tooltip('Eliminar'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
