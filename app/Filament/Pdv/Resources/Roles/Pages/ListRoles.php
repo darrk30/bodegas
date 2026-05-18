@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Filament\Pdv\Resources\Roles\Pages;
+
+use App\Filament\Pdv\Resources\Roles\RoleResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Icons\Heroicon;
+
+class ListRoles extends ListRecords
+{
+    protected static string $resource = RoleResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make()->label('Nuevo')->icon(Heroicon::OutlinedPlus),
+        ];
+    }
+}

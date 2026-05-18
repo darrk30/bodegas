@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Filament\Pdv\Resources\Users\Pages;
+
+use App\Filament\Pdv\Resources\Users\UserResource;
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Icons\Heroicon;
+
+class ListUsers extends ListRecords
+{
+    protected static string $resource = UserResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make()
+                ->label('Nuevo')
+                ->icon(Heroicon::OutlinedPlus),
+        ];
+    }
+}
